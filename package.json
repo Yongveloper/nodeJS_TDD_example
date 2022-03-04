@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.8",
+    "@types/jest": "^27.4.1",
     "cross-env": "^7.0.3",
     "jest": "^27.5.1",
     "node-mocks-http": "^1.11.0",
