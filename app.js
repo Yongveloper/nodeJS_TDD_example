@@ -9,7 +9,7 @@ import { config } from './config.js';
 import { initSocket, getSocketIO } from './connection/socket.js';
 import { sequelize } from './db/database.js';
 import { TweetController } from './controller/tweet.js';
-import * as TweetRepository from './data/tweet';
+import * as tweetRepository from './data/tweet';
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use(morgan('tiny'));
 
 app.use(
   '/tweets',
-  tweetsRouter(new TweetController(TweetRepository, getSocketIO))
+  tweetsRouter(new TweetController(tweetRepository, getSocketIO))
 );
 app.use('/auth', authRouter);
 
