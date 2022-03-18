@@ -13,7 +13,6 @@ const validateTweet = [
     .withMessage('text should be at least 3 characters'),
   validate,
 ];
-
 export default function tweetsRouter(tweetController) {
   // GET /tweet
   // GET /tweets?username=:username
@@ -30,4 +29,5 @@ export default function tweetsRouter(tweetController) {
 
   // DELETE /tweets/:id
   router.delete('/:id', isAuth, tweetController.deleteTweet);
+  return router;
 }
