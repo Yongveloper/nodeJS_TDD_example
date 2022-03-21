@@ -7,6 +7,8 @@
   "type": "module",
   "scripts": {
     "test": "cross-env DOTENV_CONFIG_PATH=./.env.test jest --watchAll --verbose",
+    "test:unit": "cross-env DOTENV_CONFIG_PATH=./.env.test jest --watchAll --verbose --testPathIgnorePatterns=/tests/integration-tests",
+    "test:integration": "cross-env DOTENV_CONFIG_PATH=./.env.test jest --watchAll --verbose --testPathPattern=/tests/integration-tests",
     "start": "nodemon index"
   },
   "author": "Dream Coding Academy",
