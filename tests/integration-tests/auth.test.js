@@ -2,6 +2,7 @@ import axios from 'axios';
 import faker from 'faker';
 import { startServer, stopServer } from '../../app.js';
 import { sequelize } from '../../db/database.js';
+import { createNewUserAccount, makeValidUserDetails } from './auth_utill.js';
 
 describe('Auth APIs', () => {
   let server;
@@ -9,13 +10,12 @@ describe('Auth APIs', () => {
   beforeAll(async () => {
     server = await startServer();
     request = axios.create({
-      baseURL: 'http://localhost:8080',
+      baseURL: `http://localhost:${server.address().port}`,
       validateStatus: null,
     });
   });
 
   afterAll(async () => {
-    await sequelize.drop();
     await stopServer(server);
   });
 
@@ -78,7 +78,7 @@ describe('Auth APIs', () => {
 
   describe('POST to /auth/login', () => {
     it('returns 200 and authorization token whne user credentials are valid', async () => {
-      const user = await createNewUserAccount();
+      const user = await createNewUserAccount(request);
 
       const res = await request.post('/auth/login', {
         username: user.username,
@@ -90,7 +90,7 @@ describe('Auth APIs', () => {
     });
 
     it('returns 401 when password id incorrect', async () => {
-      const user = await createNewUserAccount();
+      const user = await createNewUserAccount(request);
       const wrongPassword = user.password.toUpperCase();
 
       const res = await request.post('/auth/login', {
@@ -117,7 +117,7 @@ describe('Auth APIs', () => {
 
   describe('GET /auth/me', () => {
     it('returns user details when valid token is present in Authorization header', async () => {
-      const user = await createNewUserAccount();
+      const user = await createNewUserAccount(request);
 
       const res = await request.get('/auth/me', {
         headers: { Authorization: `Bearer ${user.jwt}` },
@@ -130,23 +130,4 @@ describe('Auth APIs', () => {
       });
     });
   });
-
-  async function createNewUserAccount() {
-    const userDetails = makeValidUserDetails();
-    const preapreUserResponse = await request.post('/auth/signup', userDetails);
-    return {
-      ...userDetails,
-      jwt: preapreUserResponse.data.token,
-    };
-  }
 });
-
-function makeValidUserDetails() {
-  const fakeUser = faker.helpers.userCard();
-  return {
-    name: fakeUser.name,
-    username: fakeUser.username,
-    email: fakeUser.email,
-    password: faker.internet.password(10, true),
-  };
-}
